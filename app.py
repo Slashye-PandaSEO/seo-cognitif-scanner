@@ -20,17 +20,18 @@ from urllib.parse import urlparse
 app = Flask(__name__)
 
 # Links to Panda SEO articles for recommendations
+# Only use URLs that EXIST on panda-seo.fr
 PANDA_LINKS = {
-    "vitesse": "https://panda-seo.fr/core-web-vitals-guide-complet/",
-    "maillage": "https://panda-seo.fr/maillage-interne-seo/",
-    "title": "https://panda-seo.fr/balise-title-seo/",
-    "backlinks": "https://panda-seo.fr/backlinks-strategie/",
-    "seo_local": "https://panda-seo.fr/seo-local-guide/",
-    "schema": "https://panda-seo.fr/donnees-structurees-schema-org/",
+    "vitesse": "https://panda-seo.fr/optimisation-technique/",
+    "maillage": "https://panda-seo.fr/checklist-de-seo-technique-optimisez-votre-site-pas-a-pas/",
+    "title": "https://panda-seo.fr/optimisation-on-page-la-checklist-ultime-pour-ameliorer-votre-seo/",
+    "backlinks": "https://panda-seo.fr/strategie-de-netlinking/",
+    "seo_local": "https://panda-seo.fr/referencement-local/",
+    "schema": "https://panda-seo.fr/optimisation-technique/",
     "audit": "https://panda-seo.fr/audit-seo-complet/",
-    "contenu": "https://panda-seo.fr/redaction-seo-guide/",
-    "cognitif": "https://panda-seo.fr/seo-cognitif/",
-    "diagnostic": "https://lnkd.in/exZrBMYe",
+    "contenu": "https://panda-seo.fr/creation-et-optimisation-de-contenu/",
+    "cognitif": "https://panda-seo.fr/scanner-seo-cognitif/",
+    "diagnostic": "https://calendly.com/nboisselier-com/15min",
 }
 
 HEADERS = {
