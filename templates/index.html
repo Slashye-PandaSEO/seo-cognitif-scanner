@@ -66,28 +66,39 @@
         .quick-wins li::before{content:"🔴 "}
 
         /* CATEGORIES */
-        .cat-grid{display:grid;grid-template-columns:1fr;gap:14px}
-        .cat-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;transition:border-color .3s}
+        .cat-grid{display:grid;grid-template-columns:1fr;gap:18px}
+        .cat-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:28px;transition:border-color .3s}
         .cat-card:hover{border-color:var(--accent)}
-        .cat-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-        .cat-head .left{display:flex;align-items:center;gap:10px}
-        .cat-head .icon{font-size:22px}
-        .cat-head h3{font-size:14px;font-weight:700}
+        .cat-card.card-good{border-left:4px solid var(--green)}
+        .cat-card.card-mid{border-left:4px solid var(--orange)}
+        .cat-card.card-bad{border-left:4px solid var(--accent)}
+        .cat-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+        .cat-head .left{display:flex;align-items:center;gap:12px}
+        .cat-head .icon{font-size:28px}
+        .cat-head h3{font-size:18px;font-weight:800}
 
         /* Score bar */
-        .score-bar-wrap{width:100px;height:8px;background:var(--border);border-radius:4px;overflow:hidden}
-        .score-bar{height:100%;border-radius:4px;transition:width 1s ease}
+        .score-bar-wrap{width:120px;height:10px;background:var(--border);border-radius:5px;overflow:hidden}
+        .score-bar{height:100%;border-radius:5px;transition:width 1s ease}
         .bar-high{background:var(--green)}.bar-mid{background:var(--orange)}.bar-low{background:var(--accent)}
-        .score-num{font-size:12px;font-weight:700;margin-left:8px}
+        .score-num{font-size:15px;font-weight:800;margin-left:10px}
 
-        .bias-tag{display:inline-block;background:var(--blue);color:#fff;padding:3px 10px;border-radius:6px;font-size:10px;font-weight:600;margin-bottom:10px}
-        .bias-explain{font-size:12px;color:var(--muted);font-style:italic;margin-bottom:12px;line-height:1.5}
-        .det-list{list-style:none;margin-bottom:10px}
-        .det-list li{font-size:12px;color:var(--light);padding:3px 0}
-        .reco-list{list-style:none;background:rgba(245,158,11,0.05);border-radius:8px;padding:12px}
-        .reco-list li{font-size:12px;color:var(--light);padding:6px 0 6px 18px;position:relative;line-height:1.6;border-bottom:1px solid rgba(255,255,255,0.05)}
+        /* Fun fact */
+        .fun-fact{background:rgba(67,97,238,0.1);border:1px solid rgba(67,97,238,0.3);border-radius:10px;padding:12px 16px;margin-bottom:14px;font-size:14px;line-height:1.5;color:var(--light)}
+        .fun-fact strong{color:var(--blue)}
+        .fun-fact.fact-good{background:rgba(15,155,88,0.1);border-color:rgba(15,155,88,0.3)}
+        .fun-fact.fact-good strong{color:var(--green)}
+        .fun-fact.fact-bad{background:rgba(233,69,96,0.08);border-color:rgba(233,69,96,0.3)}
+        .fun-fact.fact-bad strong{color:var(--accent)}
+
+        .bias-tag{display:inline-block;background:var(--blue);color:#fff;padding:4px 12px;border-radius:8px;font-size:12px;font-weight:600;margin-bottom:12px}
+        .bias-explain{font-size:14px;color:var(--muted);font-style:italic;margin-bottom:14px;line-height:1.6}
+        .det-list{list-style:none;margin-bottom:14px}
+        .det-list li{font-size:14px;color:var(--light);padding:5px 0;line-height:1.5}
+        .reco-list{list-style:none;background:rgba(245,158,11,0.06);border-radius:10px;padding:16px}
+        .reco-list li{font-size:14px;color:var(--light);padding:8px 0 8px 22px;position:relative;line-height:1.7;border-bottom:1px solid rgba(255,255,255,0.05)}
         .reco-list li:last-child{border-bottom:none}
-        .reco-list li::before{content:"→";position:absolute;left:0;color:var(--orange)}
+        .reco-list li::before{content:"→";position:absolute;left:0;color:var(--orange);font-weight:700}
         .reco-list li strong{color:var(--orange);font-weight:700}
         .reco-list li a{color:var(--accent);text-decoration:none;font-weight:600}
         .reco-list li a:hover{text-decoration:underline}
@@ -172,6 +183,89 @@ function startScan(){
 document.getElementById('url-input').addEventListener('keypress',e=>{if(e.key==='Enter')startScan()});
 
 function getBarClass(s,m){const p=s/m*100;return p>=70?'bar-high':p>=40?'bar-mid':'bar-low'}
+
+function getFunFact(name,score,max){
+    const pct=Math.round(score/max*100);
+    // Fun facts by category — ludique, comparaisons population
+    const facts={
+        "Vitesse perçue":{
+            good:`<div class="fun-fact fact-good">🏆 <strong>Top ${100-pct}% !</strong> Ton site charge plus vite que ${pct}% des sites analysés. Le cerveau de tes visiteurs se sent en confiance dès la première seconde.</div>`,
+            mid:`<div class="fun-fact">⏱️ <strong>${100-pct}% des sites font pareil.</strong> T'es dans la moyenne — mais sur le web, la moyenne fait fuir. 53% des visiteurs partent après 3 secondes.</div>`,
+            bad:`<div class="fun-fact fact-bad">🐌 <strong>85% des sites sont plus rapides que le tien.</strong> Au-delà de 3 secondes, le cerveau perçoit ton site comme une menace. Il fuit.</div>`
+        },
+        "Titre H1":{
+            good:`<div class="fun-fact fact-good">🎯 <strong>Bien joué !</strong> Ton H1 parle au cerveau rapide. Seuls 20% des sites ont un H1 aussi efficace.</div>`,
+            mid:`<div class="fun-fact">📝 <strong>70% des sites ont un H1 générique comme le tien.</strong> Le cerveau décide en 3 secondes — ton H1 doit accrocher, pas décrire.</div>`,
+            bad:`<div class="fun-fact fact-bad">😬 <strong>9 sites sur 10 ont ce problème.</strong> Ton H1 ne dit rien au cerveau. C'est comme un panneau d'autoroute vide.</div>`
+        },
+        "Meta Title":{
+            good:`<div class="fun-fact fact-good">✅ <strong>Ton title accroche !</strong> Il active le cerveau rapide dans les résultats Google. Tu fais mieux que 75% des sites.</div>`,
+            mid:`<div class="fun-fact">📋 <strong>La plupart des sites ont un title neutre comme le tien.</strong> Dans les résultats Google, le cerveau a 1 seconde pour décider. Neutre = invisible.</div>`,
+            bad:`<div class="fun-fact fact-bad">🚫 <strong>Sans title ou avec un title vide, Google choisit pour toi.</strong> Et il choisit mal. 100% des sites bien référencés ont un title optimisé.</div>`
+        },
+        "Meta Description":{
+            good:`<div class="fun-fact fact-good">💬 <strong>Ta description donne envie de cliquer !</strong> Tu es dans le top 30% des sites qui maîtrisent leur message dans Google.</div>`,
+            mid:`<div class="fun-fact">📄 <strong>60% des sites ont une description passable.</strong> Pas mal, mais pas assez pour que le cerveau choisisse TON résultat parmi les 10 autres.</div>`,
+            bad:`<div class="fun-fact fact-bad">❌ <strong>Sans meta description, Google prend un bout de texte random.</strong> Tu contrôles pas le message. 40% des sites font cette erreur.</div>`
+        },
+        "Structure cognitive":{
+            good:`<div class="fun-fact fact-good">🧱 <strong>Contenu bien structuré !</strong> Le cerveau peut scanner ta page en 3 secondes et trouver ce qu'il cherche. Top 25%.</div>`,
+            mid:`<div class="fun-fact">📑 <strong>Ton contenu est correct mais manque de repères visuels.</strong> Le cerveau scanne avant de lire — comme dans un supermarché, il faut des panneaux.</div>`,
+            bad:`<div class="fun-fact fact-bad">🧱 <strong>90% des visiteurs quittent une page sans structure.</strong> Ton contenu ressemble à un mur de texte. Le cerveau abandonne.</div>`
+        },
+        "Preuve sociale":{
+            good:`<div class="fun-fact fact-good">👥 <strong>Ton site inspire confiance !</strong> Des avis, des chiffres, des preuves. Le cerveau se dit "si d'autres font confiance, moi aussi".</div>`,
+            mid:`<div class="fun-fact">🤔 <strong>72% des consommateurs lisent les avis avant d'acheter.</strong> Ton site a quelques signaux de confiance, mais pas assez pour convaincre le cerveau hésitant.</div>`,
+            bad:`<div class="fun-fact fact-bad">😰 <strong>Zéro preuve sociale visible.</strong> C'est comme un restaurant vide : le cerveau se dit "personne y va, y'a sûrement une raison".</div>`
+        },
+        "Appel à l'action":{
+            good:`<div class="fun-fact fact-good">🖱️ <strong>Tes CTA guident bien le visiteur.</strong> Le cerveau sait exactement quoi faire. Tu fais mieux que 70% des sites.</div>`,
+            mid:`<div class="fun-fact">🔘 <strong>La plupart des sites ont des CTA mais mal placés.</strong> Si le cerveau doit chercher le bouton, il part. L'action doit être évidente.</div>`,
+            bad:`<div class="fun-fact fact-bad">🚪 <strong>Pas de CTA = une porte sans poignée.</strong> Le visiteur est entré, il a lu, mais il sait pas comment passer à l'étape suivante. 80% des sites font cette erreur.</div>`
+        },
+        "Images":{
+            good:`<div class="fun-fact fact-good">🖼️ <strong>Tes images sont bien gérées !</strong> Le cerveau traite les images 60 000x plus vite que le texte. T'en profites bien.</div>`,
+            mid:`<div class="fun-fact">📸 <strong>Tes images existent mais manquent d'optimisation.</strong> Des alt text manquants = invisible pour Google et les lecteurs d'écran.</div>`,
+            bad:`<div class="fun-fact fact-bad">🏜️ <strong>Aucune image sur ta page.</strong> Le cerveau traite les visuels 60 000x plus vite que le texte. Sans image, ta page perd en attractivité.</div>`
+        },
+        "Maillage interne":{
+            good:`<div class="fun-fact fact-good">🔗 <strong>Bon maillage !</strong> Tes pages sont connectées entre elles. Le cerveau du visiteur navigue naturellement. Google aussi.</div>`,
+            mid:`<div class="fun-fact">🔗 <strong>Ton maillage existe mais peut être renforcé.</strong> Chaque lien interne est un chemin pour le cerveau du visiteur — et pour Google.</div>`,
+            bad:`<div class="fun-fact fact-bad">🏝️ <strong>Tes pages vivent sur des îles isolées.</strong> Aucun pont entre elles. Le cerveau du visiteur (et Google) sait pas où aller ensuite.</div>`
+        },
+        "Données structurées":{
+            good:`<div class="fun-fact fact-good">🏷️ <strong>Données structurées en place !</strong> Ton résultat Google prend plus de place que les autres. L'œil est attiré. Top 20% des sites.</div>`,
+            mid:`<div class="fun-fact">🏷️ <strong>Quelques données structurées détectées.</strong> Tu peux aller plus loin — chaque schéma supplémentaire = plus de visibilité dans Google.</div>`,
+            bad:`<div class="fun-fact fact-bad">👻 <strong>75% des sites n'ont pas de données structurées.</strong> T'es dans le lot. Ton résultat Google est basique et se fond dans la masse.</div>`
+        },
+        "Mobile":{
+            good:`<div class="fun-fact fact-good">📱 <strong>Ton site est mobile-friendly !</strong> 70% du trafic web est mobile. Le cerveau sur smartphone est encore plus impatient.</div>`,
+            mid:`<div class="fun-fact">📱 <strong>Ton site s'adapte au mobile mais peut mieux faire.</strong> Sur smartphone, chaque seconde de chargement supplémentaire = -20% de conversions.</div>`,
+            bad:`<div class="fun-fact fact-bad">📱 <strong>Ton site est pas optimisé mobile.</strong> 70% de tes visiteurs sont sur téléphone. Un site pas responsive en 2026, c'est comme un magasin sans porte d'entrée.</div>`
+        },
+        "Confiance émotionnelle":{
+            good:`<div class="fun-fact fact-good">🛡️ <strong>Ton site inspire confiance !</strong> Coordonnées visibles, HTTPS actif, mentions légales. Le cerveau se sent en sécurité.</div>`,
+            mid:`<div class="fun-fact">🛡️ <strong>Quelques signaux de confiance, mais pas assez.</strong> Le cerveau cherche des preuves qu'un humain est derrière le site. Donne-lui les.</div>`,
+            bad:`<div class="fun-fact fact-bad">🛡️ <strong>Ton site manque de signaux de confiance.</strong> Pas de téléphone, pas d'adresse = le cerveau se dit "c'est louche". La confiance se construit avec des détails.</div>`
+        },
+        "Scan CTA avancé":{
+            good:`<div class="fun-fact fact-good">🎯 <strong>Tes CTA sont efficaces !</strong> Bien placés, avec des verbes d'action et des bénéfices. Le cerveau sait quoi faire. Top 15%.</div>`,
+            mid:`<div class="fun-fact">🎯 <strong>Tes CTA existent mais manquent de punch.</strong> "En savoir plus" convertit 3x moins que "Obtenir mon guide gratuit". Le cerveau a besoin d'un bénéfice clair.</div>`,
+            bad:`<div class="fun-fact fact-bad">🎯 <strong>Pas de CTA détecté.</strong> C'est comme inviter quelqu'un chez toi et ne jamais lui dire où s'asseoir. Le cerveau a besoin d'être guidé.</div>`
+        },
+        "Scan balises complet":{
+            good:`<div class="fun-fact fact-good">🏗️ <strong>Structure de balises propre !</strong> Hiérarchie claire, pas de doublons. Google et le cerveau comprennent ta page. Top 20%.</div>`,
+            mid:`<div class="fun-fact">🏗️ <strong>Ta structure de balises est correcte mais améliorable.</strong> Des H2 plus percutants et une hiérarchie sans trous feraient grimper ton score.</div>`,
+            bad:`<div class="fun-fact fact-bad">🏗️ <strong>80% des sites ont des problèmes de balises.</strong> Hiérarchie cassée, titres dupliqués ou vides. C'est comme un livre sans sommaire : personne lit.</div>`
+        }
+    };
+
+    const f=facts[name];
+    if(!f) return '';
+    if(pct>=70) return f.good;
+    if(pct>=40) return f.mid;
+    return f.bad;
+}
 function getGradeColor(g){return 'grade-'+g}
 function getStrokeColor(g){return 'stroke-'+g}
 
@@ -213,8 +307,10 @@ function renderResults(d){
     for(const cat of d.categories){
         const bc=getBarClass(cat.score,cat.max);
         const pct=cat.score/cat.max*100;
+        const cardClass=pct>=70?'card-good':pct>=40?'card-mid':'card-bad';
+        const funFact=getFunFact(cat.name,cat.score,cat.max);
         h+=`
-        <div class="cat-card">
+        <div class="cat-card ${cardClass}">
             <div class="cat-head">
                 <div class="left"><span class="icon">${cat.icon}</span><h3>${cat.name}</h3></div>
                 <div style="display:flex;align-items:center;gap:8px">
@@ -222,10 +318,11 @@ function renderResults(d){
                     <span class="score-num ${pct>=70?'grade-A':pct>=40?'grade-C':'grade-D'}">${cat.score}/${cat.max}</span>
                 </div>
             </div>
+            ${funFact}
             <span class="bias-tag">🧠 ${cat.bias}</span>
             <p class="bias-explain">${cat.bias_explain}</p>
             <ul class="det-list">${cat.details.map(x=>`<li>${x}</li>`).join('')}</ul>
-            ${cat.recommendations.length?`<ul class="reco-list">${cat.recommendations.map(x=>`<li>${x}</li>`).join('')}</ul>`:''}<div style="margin-top:8px;text-align:right"><a href="https://lnkd.in/exZrBMYe" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:600">💬 En parler avec Nicolas →</a></div>
+            ${cat.recommendations.length?`<ul class="reco-list">${cat.recommendations.map(x=>`<li>${x}</li>`).join('')}</ul>`:''}<div style="margin-top:10px;text-align:right"><a href="https://lnkd.in/exZrBMYe" target="_blank" style="font-size:13px;color:var(--accent);text-decoration:none;font-weight:600">💬 En parler avec Nicolas →</a></div>
         </div>`;
     }
     h+='</div>';
