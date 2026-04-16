@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scanner SEO Cognitif V2 — Panda SEO</title>
+    <meta name="description" content="Analyse ton site web à travers le prisme du cerveau humain. Score SEO cognitif /100 avec recommandations.">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--bg:#0a0a1a;--bg2:#12122a;--bg3:#1a1a3a;--accent:#e94560;--green:#0f9b58;--orange:#f59e0b;--blue:#4361ee;--text:#fff;--muted:#8a8aaa;--light:#c4c4d4;--border:#2a2a4a}
+        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+        .header{text-align:center;padding:50px 20px 30px;background:linear-gradient(180deg,var(--bg2) 0%,var(--bg) 100%)}
+        .brand{font-size:13px;color:var(--accent);letter-spacing:3px;text-transform:uppercase;margin-bottom:12px}
+        .header h1{font-size:clamp(26px,5vw,44px);font-weight:900;line-height:1.2;margin-bottom:12px}
+        .header h1 span{color:var(--accent)}
+        .header .tagline{font-size:16px;color:var(--muted);max-width:550px;margin:0 auto}
+        .header .v2badge{display:inline-block;background:var(--accent);color:#fff;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;margin-left:8px;vertical-align:middle}
+
+        .search-container{max-width:680px;margin:0 auto;padding:0 20px 50px}
+        .search-box{display:flex;gap:0;background:var(--bg2);border:2px solid var(--border);border-radius:14px;overflow:hidden;transition:border-color .3s}
+        .search-box:focus-within{border-color:var(--accent)}
+        .search-box input{flex:1;padding:18px 22px;font-size:15px;background:transparent;border:none;color:var(--text);outline:none;font-family:'Inter',sans-serif}
+        .search-box input::placeholder{color:var(--muted)}
+        .search-box button{padding:18px 28px;background:var(--accent);color:#fff;border:none;font-size:15px;font-weight:700;cursor:pointer;transition:background .3s;font-family:'Inter',sans-serif}
+        .search-box button:hover{background:#c73a52}
+        .search-box button:disabled{background:#444;cursor:wait}
+
+        .loading{display:none;text-align:center;padding:50px 20px}
+        .loading.active{display:block}
+        .spinner{width:50px;height:50px;border:4px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 20px}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        .loading p{color:var(--muted);font-size:15px}
+        .brain-text{margin-top:10px;font-size:13px;color:var(--muted);font-style:italic}
+
+        .results{display:none;max-width:880px;margin:0 auto;padding:0 20px 60px}
+        .results.active{display:block}
+
+        /* SCORE HERO */
+        .score-hero{text-align:center;padding:40px;background:var(--bg2);border-radius:20px;margin-bottom:28px;border:1px solid var(--border);position:relative;overflow:hidden}
+        .score-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:4px}
+        .hero-A::before{background:var(--green)}.hero-B::before{background:var(--blue)}.hero-C::before{background:var(--orange)}.hero-D::before{background:var(--accent)}.hero-F::before{background:#f00}
+
+        .score-ring{width:150px;height:150px;margin:0 auto 20px;position:relative}
+        .score-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+        .score-ring .bg{fill:none;stroke:var(--border);stroke-width:8}
+        .score-ring .fg{fill:none;stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset 1.5s ease}
+        .score-ring .number{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:48px;font-weight:900}
+        .grade-label{font-size:18px;font-weight:700;margin-bottom:6px}
+        .grade-text{color:var(--muted);font-size:15px}
+        .url-line{margin-top:14px;font-size:12px;color:var(--muted);word-break:break-all}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin-top:16px;flex-wrap:wrap}
+        .stat{text-align:center}
+        .stat .num{font-size:20px;font-weight:800;color:var(--accent)}
+        .stat .label{font-size:11px;color:var(--muted);margin-top:2px}
+
+        .grade-A{color:var(--green)}.grade-B{color:var(--blue)}.grade-C{color:var(--orange)}.grade-D{color:var(--accent)}.grade-F{color:#f00}
+        .stroke-A{stroke:var(--green)}.stroke-B{stroke:var(--blue)}.stroke-C{stroke:var(--orange)}.stroke-D{stroke:var(--accent)}.stroke-F{stroke:#f00}
+
+        /* QUICK WINS */
+        .quick-wins{background:linear-gradient(135deg,#1a0a0a,#2a1010);border:1px solid #e9456040;border-radius:14px;padding:20px;margin-bottom:28px}
+        .quick-wins h3{color:var(--accent);font-size:14px;margin-bottom:10px}
+        .quick-wins ul{list-style:none}
+        .quick-wins li{padding:6px 0;color:var(--light);font-size:13px}
+        .quick-wins li::before{content:"🔴 "}
+
+        /* CATEGORIES */
+        .cat-grid{display:grid;grid-template-columns:1fr;gap:14px}
+        .cat-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;transition:border-color .3s}
+        .cat-card:hover{border-color:var(--accent)}
+        .cat-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+        .cat-head .left{display:flex;align-items:center;gap:10px}
+        .cat-head .icon{font-size:22px}
+        .cat-head h3{font-size:14px;font-weight:700}
+
+        /* Score bar */
+        .score-bar-wrap{width:100px;height:8px;background:var(--border);border-radius:4px;overflow:hidden}
+        .score-bar{height:100%;border-radius:4px;transition:width 1s ease}
+        .bar-high{background:var(--green)}.bar-mid{background:var(--orange)}.bar-low{background:var(--accent)}
+        .score-num{font-size:12px;font-weight:700;margin-left:8px}
+
+        .bias-tag{display:inline-block;background:var(--blue);color:#fff;padding:3px 10px;border-radius:6px;font-size:10px;font-weight:600;margin-bottom:10px}
+        .bias-explain{font-size:12px;color:var(--muted);font-style:italic;margin-bottom:12px;line-height:1.5}
+        .det-list{list-style:none;margin-bottom:10px}
+        .det-list li{font-size:12px;color:var(--light);padding:3px 0}
+        .reco-list{list-style:none;background:rgba(245,158,11,0.05);border-radius:8px;padding:12px}
+        .reco-list li{font-size:12px;color:var(--light);padding:6px 0 6px 18px;position:relative;line-height:1.6;border-bottom:1px solid rgba(255,255,255,0.05)}
+        .reco-list li:last-child{border-bottom:none}
+        .reco-list li::before{content:"→";position:absolute;left:0;color:var(--orange)}
+        .reco-list li strong{color:var(--orange);font-weight:700}
+        .reco-list li a{color:var(--accent);text-decoration:none;font-weight:600}
+        .reco-list li a:hover{text-decoration:underline}
+
+        /* CTA */
+        .cta-bottom{text-align:center;margin-top:40px;padding:40px;background:linear-gradient(135deg,var(--accent),#c73a52);border-radius:20px}
+        .cta-bottom h3{font-size:22px;font-weight:800;margin-bottom:10px}
+        .cta-bottom p{font-size:15px;opacity:.9;margin-bottom:20px}
+        .cta-bottom a{display:inline-block;background:#fff;color:var(--accent);padding:14px 28px;border-radius:10px;text-decoration:none;font-weight:700;font-size:15px;transition:transform .2s}
+        .cta-bottom a:hover{transform:scale(1.05)}
+
+        /* ACTIONS BAR */
+        .actions{display:flex;justify-content:center;gap:12px;margin-top:20px;flex-wrap:wrap}
+        .actions button{padding:10px 20px;border-radius:10px;border:1px solid var(--border);background:var(--bg2);color:var(--text);font-size:13px;font-weight:600;cursor:pointer;transition:all .3s;font-family:'Inter',sans-serif}
+        .actions button:hover{border-color:var(--accent);color:var(--accent)}
+
+        .footer{text-align:center;padding:30px 20px;color:var(--muted);font-size:12px}
+        .footer a{color:var(--accent);text-decoration:none}
+
+        @media(max-width:640px){.search-box{flex-direction:column}.search-box button{padding:14px}.score-hero{padding:24px 16px}.score-ring{width:120px;height:120px}.score-ring .number{font-size:36px}.stats-row{gap:16px}}
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="brand">🐼 Panda SEO — Besançon</div>
+    <h1>Scanner <span>SEO Cognitif</span> <span class="v2badge">V2</span></h1>
+    <p class="tagline">Analyse ta page à travers le prisme du cerveau humain. 12 critères cognitifs. Score /100. Recommandations actionnables.</p>
+</div>
+
+<div class="search-container">
+    <div class="search-box">
+        <input type="url" id="url-input" placeholder="Entre l'URL de ta page (ex: https://mon-site.fr)" autocomplete="off">
+        <button id="scan-btn" onclick="startScan()">🧠 Scanner</button>
+    </div>
+</div>
+
+<div class="loading" id="loading">
+    <div class="spinner"></div>
+    <p>Analyse cognitive en cours...</p>
+    <p class="brain-text" id="brain-text">Connexion au cerveau de ton visiteur... 🧠</p>
+</div>
+
+<div class="results" id="results"></div>
+
+<div class="footer">
+    <p>Créé par <a href="https://www.linkedin.com/in/nicolas-boisselier-panda-seo/" target="_blank">Nicolas Boisselier</a> — <a href="https://panda-seo.fr" target="_blank">Panda SEO</a> — SEO Cognitif · Besançon</p>
+    <p style="margin-top:6px">Tout le monde optimise pour Google. Moi, j'optimise aussi le cerveau qui clique. 🐼</p>
+</div>
+
+<script>
+const brainTexts=["Connexion au cerveau du visiteur... 🧠","Analyse de la vitesse perçue... ⚡","Appel à Google PageSpeed Insights... 📊","Scan du titre H1... 🎯","Vérification des meta tags... 📝","Détection de la preuve sociale... 👥","Analyse de la structure cognitive... 🧱","Check des appels à l'action... 🖱️","Analyse du maillage interne... 🔗","Vérification mobile... 📱","Évaluation de la confiance émotionnelle... 🛡️","Calcul du score cognitif final... 🧠"];
+let ti=0,tiv;
+
+function startScan(){
+    const url=document.getElementById('url-input').value.trim();
+    if(!url){alert('Entre une URL');return}
+    const btn=document.getElementById('scan-btn');
+    btn.disabled=true;btn.textContent='Scan...';
+    document.getElementById('loading').classList.add('active');
+    document.getElementById('results').classList.remove('active');
+    ti=0;
+    tiv=setInterval(()=>{if(ti<brainTexts.length){document.getElementById('brain-text').textContent=brainTexts[ti];ti++}},2000);
+
+    fetch('/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url})})
+    .then(r=>r.json())
+    .then(data=>{
+        clearInterval(tiv);
+        document.getElementById('loading').classList.remove('active');
+        btn.disabled=false;btn.textContent='🧠 Scanner';
+        if(data.error){alert(data.error);return}
+        renderResults(data);
+    })
+    .catch(err=>{
+        clearInterval(tiv);
+        document.getElementById('loading').classList.remove('active');
+        btn.disabled=false;btn.textContent='🧠 Scanner';
+        alert('Erreur : '+err.message);
+    });
+}
+
+document.getElementById('url-input').addEventListener('keypress',e=>{if(e.key==='Enter')startScan()});
+
+function getBarClass(s,m){const p=s/m*100;return p>=70?'bar-high':p>=40?'bar-mid':'bar-low'}
+function getGradeColor(g){return 'grade-'+g}
+function getStrokeColor(g){return 'stroke-'+g}
+
+function renderResults(d){
+    const c=document.getElementById('results');
+    const circ=2*Math.PI*62;
+    const offset=circ-(d.score_total/100)*circ;
+
+    let h=`
+    <div class="score-hero hero-${d.grade}">
+        <div class="score-ring">
+            <svg viewBox="0 0 140 140">
+                <circle class="bg" cx="70" cy="70" r="62"/>
+                <circle class="fg ${getStrokeColor(d.grade)}" cx="70" cy="70" r="62" stroke-dasharray="${circ}" stroke-dashoffset="${offset}"/>
+            </svg>
+            <div class="number ${getGradeColor(d.grade)}">${d.score_total}</div>
+        </div>
+        <div class="grade-label ${getGradeColor(d.grade)}">${d.grade_emoji} Grade ${d.grade}</div>
+        <div class="grade-text">${d.grade_text}</div>
+        <div class="url-line">🔗 ${d.url}</div>
+        <div class="stats-row">
+            <div class="stat"><div class="num">${d.load_time}s</div><div class="label">Réponse serveur</div></div>
+            <div class="stat"><div class="num">${d.word_count}</div><div class="label">Mots</div></div>
+            <div class="stat"><div class="num">${d.categories.length}</div><div class="label">Critères analysés</div></div>
+            ${d.pagespeed&&d.pagespeed.available?`<div class="stat"><div class="num">${d.pagespeed.score}/100</div><div class="label">PageSpeed Mobile</div></div>`:''}
+        </div>
+        <div class="actions">
+            <button onclick="window.print()">🖨️ Imprimer le rapport</button>
+            <button onclick="copyResults()">📋 Copier le résumé</button>
+            <button onclick="shareLinkedIn()">💼 Partager sur LinkedIn</button>
+        </div>
+    </div>`;
+
+    if(d.quick_wins.length>0&&!d.quick_wins[0].startsWith("Pas de problème")){
+        h+=`<div class="quick-wins"><h3>🚨 Problèmes critiques</h3><ul>${d.quick_wins.map(q=>`<li>${q}</li>`).join('')}</ul></div>`;
+    }
+
+    h+='<div class="cat-grid">';
+    for(const cat of d.categories){
+        const bc=getBarClass(cat.score,cat.max);
+        const pct=cat.score/cat.max*100;
+        h+=`
+        <div class="cat-card">
+            <div class="cat-head">
+                <div class="left"><span class="icon">${cat.icon}</span><h3>${cat.name}</h3></div>
+                <div style="display:flex;align-items:center;gap:8px">
+                    <div class="score-bar-wrap"><div class="score-bar ${bc}" style="width:${pct}%"></div></div>
+                    <span class="score-num ${pct>=70?'grade-A':pct>=40?'grade-C':'grade-D'}">${cat.score}/${cat.max}</span>
+                </div>
+            </div>
+            <span class="bias-tag">🧠 ${cat.bias}</span>
+            <p class="bias-explain">${cat.bias_explain}</p>
+            <ul class="det-list">${cat.details.map(x=>`<li>${x}</li>`).join('')}</ul>
+            ${cat.recommendations.length?`<ul class="reco-list">${cat.recommendations.map(x=>`<li>${x}</li>`).join('')}</ul>`:''}<div style="margin-top:8px;text-align:right"><a href="https://lnkd.in/exZrBMYe" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:600">💬 En parler avec Nicolas →</a></div>
+        </div>`;
+    }
+    h+='</div>';
+
+    h+=`
+    <div class="cta-bottom">
+        <h3>Tu veux aller plus loin ?</h3>
+        <p>Diagnostic SEO cognitif complet gratuit — 30 minutes avec Nicolas</p>
+        <a href="https://lnkd.in/exZrBMYe" target="_blank">Réserver mon diagnostic gratuit 🐼</a>
+    </div>`;
+
+    c.innerHTML=h;
+    c.classList.add('active');
+    c.scrollIntoView({behavior:'smooth'});
+
+    // Store for copy/share
+    window._lastResult=d;
+}
+
+function copyResults(){
+    const d=window._lastResult;if(!d)return;
+    let t=`🧠 Score SEO Cognitif : ${d.score_total}/100 (Grade ${d.grade})\n${d.url}\n\n`;
+    for(const c of d.categories)t+=`${c.icon} ${c.name} : ${c.score}/${c.max}\n`;
+    t+=`\nAnalysé avec le Scanner SEO Cognitif de Panda SEO 🐼\nhttps://panda-seo.fr`;
+    navigator.clipboard.writeText(t).then(()=>alert('Résumé copié !'));
+}
+
+function shareLinkedIn(){
+    const d=window._lastResult;if(!d)return;
+    const text=encodeURIComponent(`🧠 Je viens de scanner mon site avec le Scanner SEO Cognitif de @Panda SEO.\n\nScore : ${d.score_total}/100 (Grade ${d.grade})\n\nCet outil analyse ta page à travers le prisme du cerveau humain. Pas juste la technique — comment le cerveau de tes visiteurs perçoit ton site.\n\nTeste le tien gratuitement 👇`);
+    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://panda-seo.fr')}`,'_blank');
+}
+</script>
+</body>
+</html>
